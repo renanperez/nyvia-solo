@@ -15,13 +15,38 @@
   <script type="text/babel">
     const { useState, useEffect } = React;
 
+
     function App() {
+      const [autenticado, setAutenticado] = useState(false);
+      const [erro, setErro] = useState('');
       const [menuAberto, setMenuAberto] = useState(true);
       const [paginaAtual, setPaginaAtual] = useState('dashboard');
       const [metricas, setMetricas] = useState([]);  // era produtos
       const [loading, setLoading] = useState(false);
       const [novaMetrica, setNovaMetrica] = useState({ nome: '', benchmark: '' });
 
+      //  Função de login
+      const fazerLogin = async (email, senha) => {
+        try {
+          const response = await fetch('http://localhost:3001/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, senha })
+          });
+          const data = await response.json();
+          
+          if (data.sucesso) {
+            setAutenticado(true);
+            setErro('');
+          } else {
+            setErro(data.mensagem);
+          }
+        } catch (error) {
+          setErro('Erro ao conectar com servidor');
+        }
+      };
+
+      //  Função para buscar métricas do backend
       const buscarMetricas = async () => {
       setLoading(true);
       try {
@@ -35,6 +60,7 @@
       setLoading(false);
       };
 
+      // Função para calcular métricas
       const calcularMetricas = async (e) => {
       e.preventDefault();
       try {
@@ -58,13 +84,52 @@
         buscarMetricas();
       }
       }, [paginaAtual]);
-
+      
       const itensMenu = [
         { id: 'dashboard', nome: 'Dashboard', icone: '📊' },
         { id: 'metricas', nome: 'Métricas', icone: '📈' },
         { id: 'usuarios', nome: 'Usuários', icone: '👥' },
         { id: 'config', nome: 'Configurações', icone: '⚙️' }
       ];
+      // Renderização condicional entre tela de login e dashboard
+      const TelaLogin = () => {
+      const [email, setEmail] = useState('');
+      const [senha, setSenha] = useState('');
+      // Tela de Login
+      return (
+        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+            <h2 className="text-2xl font-bold mb-6">Login</h2>
+            {erro && <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{erro}</div>}
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full border border-gray-300 rounded px-4 py-2 mb-4"
+            />
+            <input
+              type="password"
+              placeholder="Senha"
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              className="w-full border border-gray-300 rounded px-4 py-2 mb-4"
+            />
+            <button
+              onClick={() => fazerLogin(email, senha)}
+              className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+            >
+              Entrar
+            </button>
+          </div>
+        </div>
+      );
+      };
+      if (!autenticado) {
+        return <TelaLogin />; // Exibe tela de login se não autenticado.
+      }
+
+      // Dashboard Principal
       return (
         <div className="flex h-screen">
           {/* Menu Lateral */}
