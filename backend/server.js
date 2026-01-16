@@ -2,9 +2,19 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const { autenticar } = require('./login.js');
+// Importa o banco de dados (cria a conexão com o arquivo database.js)
+const db = require('./database.js');
+// Importa a função de registro de usuário
+const { registrarUsuario } = require('./registro.js');
 
 app.use(cors());
 app.use(express.json());
+
+app.post('/api/registrar', (req, res) => {
+  registrarUsuario(req.body, (err, resultado) => {
+    res.json(resultado);
+  });
+});
 
 app.post('/api/login', (req, res) => {
   const resultado = autenticar(req.body);
