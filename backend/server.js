@@ -11,6 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 app.post("/api/registrar", (req, res) => {
+  console.log("📥 POST /api/registrar recebeu:", req.body);
   registrarUsuario(req.body, (err, resultado) => {
     res.json(resultado);
   });

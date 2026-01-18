@@ -13,7 +13,7 @@ function autenticar(dados, callback) {
 
   // Buscar usuário no banco de dados
   db.get(
-    "SELECT * FROM usuarios WHERE email = ?",
+    "SELECT usuarios.*, workspaces.nome AS workspace_nome FROM usuarios JOIN workspaces ON usuarios.workspace_id = workspaces.id WHERE usuarios.email = ?",
     [dados.email],
     (err, row) => {
       //  Validar em caso de erro na consulta
@@ -48,9 +48,11 @@ function autenticar(dados, callback) {
             sucesso: true,
             mensagem: "Login realizado com sucesso",
             usuario: {
+              // Retornando dados do usuário e nome do workspace
               id: row.id,
-              nome: row.nome,
               email: row.email,
+              workspaceId: row.workspace_id,
+              workspaceNome: row.workspace_nome,
             },
           });
         } else {
