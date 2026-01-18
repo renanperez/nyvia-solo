@@ -9,14 +9,14 @@ const { registrarUsuario } = require("./registro.js");
 
 app.use(cors());
 app.use(express.json());
-
+// Rota POST - registrar usuário
 app.post("/api/registrar", (req, res) => {
   console.log("📥 POST /api/registrar recebeu:", req.body);
   registrarUsuario(req.body, (err, resultado) => {
     res.json(resultado);
   });
 });
-
+// Rota POST - login
 app.post("/api/login", (req, res) => {
   autenticar(req.body, (err, resultado) => {
     res.json(resultado);
