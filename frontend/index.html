@@ -17,13 +17,15 @@
 
       function App() {
         const [autenticado, setAutenticado] = useState(false);
-        const [mostraRegistro, setMostraRegistro] = useState(false);
+        const [mostraRegistro, setMostraRegistro] = useState(false); // estado para alternar entre login e registro
         const [erro, setErro] = useState("");
+        const [usuario, setUsuario] = useState(null); // estado para armazenar dados do usuário
         const [menuAberto, setMenuAberto] = useState(true);
         const [paginaAtual, setPaginaAtual] = useState("dashboard");
-        const [metricas, setMetricas] = useState([]); // era produtos
+        const [metricas, setMetricas] = useState([]); // estado para armazenar métricas
         const [loading, setLoading] = useState(false);
         const [novaMetrica, setNovaMetrica] = useState({
+          // estado para nova métrica
           nome: "",
           benchmark: "",
         });
@@ -43,6 +45,7 @@
 
             if (data.sucesso) {
               setAutenticado(true);
+              setUsuario(data.usuario); // Armazenar dados do usuário
               setErro("");
             } else {
               setErro(data.mensagem);
@@ -61,9 +64,10 @@
               body: JSON.stringify({ email, senha }),
             });
             const data = await response.json();
-
+            //  Verificar sucesso do login
             if (data.sucesso) {
               setAutenticado(true);
+              setUsuario(data.usuario); // Armazenar dados do usuário
               setErro("");
             } else {
               setErro(data.mensagem);
@@ -237,7 +241,7 @@
             >
               <div className="p-4 flex items-center justify-between border-b border-gray-700">
                 <h1 className={`font-bold text-xl ${!menuAberto && "hidden"}`}>
-                  Meu App
+                  {usuario?.workspaceNome || "Meu App"}
                 </h1>
                 <button
                   onClick={() => setMenuAberto(!menuAberto)}
