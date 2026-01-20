@@ -90,7 +90,7 @@ Acesse: http://localhost:8000
 
 ## 💡 Próximos Passos
 
-- Separar frontend em componentes individuais (para uso de recursos utilizados )
+- Separar frontend em componentes individuais com o Vite (para uso de recursos utilizados)
 - Deploy (Vercel, Railway, Render)
 - Adicionar validações no backend (quando necessário)
 
