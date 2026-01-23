@@ -29,7 +29,7 @@ import  React, { useState, useEffect } from "react";
             const data = await response.json();
 
             if (data.sucesso) {
-              setAutenticado(true);
+              setAutenticado(true); // Marcar como autenticado e logado
               setUsuario(data.usuario); // Armazenar dados do usuário
               setErro("");
             } else {
