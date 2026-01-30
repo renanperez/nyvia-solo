@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { createContext, useContext } from "react";
-//    Importa createContext e useContext do React para criar e usar o contexto de autenticação
+import { createContext, useContext } from "react"; //  Importa createContext e useContext do React para criar e usar o contexto de autenticação
 
-const AuthContext = createContext(); // CreateContext cria o contexto de autenticação associado à constante AuthContext
+const AuthContext = createContext(); // Cria o contexto de autenticação
 
+// AuthProvider (em useAuth.jsx) - componente que envolve a aplicação e fornece o contexto de autenticação
 export function AuthProvider({ children }) {
-  const [autenticado, setAutenticado] = useState(false);
-  const [mostraRegistro, setMostraRegistro] = useState(false);
-  const [erro, setErro] = useState("");
-  const [usuario, setUsuario] = useState(null);
+  const [autenticado, setAutenticado] = useState(false); // Estado para rastrear se o usuário está autenticado
+  const [mostraRegistro, setMostraRegistro] = useState(false); // Estado para alternar entre tela de login e registro
+  const [erro, setErro] = useState(""); // Estado para armazenar mensagens de erro
+  const [usuario, setUsuario] = useState(null); // Estado para armazenar dados do usuário autenticado
 
   // Função de registro
   const fazerRegistro = async (email, senha, nomeWorkspace) => {
@@ -74,7 +74,7 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
-
+// useAuth Hook (em useAuth.jsx) - hook personalizado para acessar o contexto de autenticação
 export function useAuth() {
-  return useContext(AuthContext);
+  return useContext(AuthContext); // Retorna o valor do contexto de autenticação para uso em outros componentes
 }

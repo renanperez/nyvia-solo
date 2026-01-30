@@ -2,64 +2,36 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "./hooks/useAuth";
 import { TelaLogin } from "./components/auth/TelaLogin";
 import { TelaRegistro } from "./components/auth/TelaRegistro";
+import { useDashboard } from "./hooks/useDashboard";
 
 function App() {
-  const auth = useAuth(); //  Hook de autenticação  
+  // Hook para autenticação usando o contexto de AuthProvider (em useAuth.jsx)
+  const auth = useAuth();
 
-  const [menuAberto, setMenuAberto] = useState(true);
-  const [paginaAtual, setPaginaAtual] = useState("dashboard");
-  const [metricas, setMetricas] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [novaMetrica, setNovaMetrica] = useState({
-    nome: "",
-    benchmark: "",
-  });
+  // Hook para gerenciar o dashboard e métricas do backend
+  const dashboard = useDashboard();
 
-  //  Função para buscar métricas do backend
-  const buscarMetricas = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch("http://localhost:3001/api/metricas");
-      const data = await response.json();
-      setMetricas(data.metricas);
-    } catch (error) {
-      console.error("Erro ao buscar métricas:", error);
-      alert("Erro: Certifique-se de que o backend está rodando na porta 3001");
-    }
-    setLoading(false);
-  };
+  // Estados (useState) para gerenciar o menu lateral e a página atual ( dashboard, métricas, usuários, configurações)
+  const [menuAberto, setMenuAberto] = useState(true); // Estado para controlar se o menu lateral está aberto ou fechado
+  const [paginaAtual, setPaginaAtual] = useState("dashboard"); // Estado para controlar a página atual exibida no conteúdo principal
 
-  // Função para calcular métricas
-  const calcularMetricas = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch("http://localhost:3001/api/metricas", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(novaMetrica),
-      });
-      const data = await response.json();
-      alert(data.mensagem);
-      console.log("Resultados:", data.resultados);
-      setNovaMetrica({ nome: "", benchmark: "" });
-      buscarMetricas();
-    } catch (error) {
-      console.error("Erro ao calcular métricas:", error);
-    }
-  };
-
+  // Hook para gerenciar o dashboard e métricas do backend (ex: buscar métricas, criar nova métrica)
   useEffect(() => {
     if (paginaAtual === "metricas") {
-      buscarMetricas();
+      dashboard.buscarMetricas(); // Buscar métricas do backend ao acessar a página de métricas
     }
   }, [paginaAtual]);
 
+  
+  // ================================================================================
+  // Desestruturação dos estados e funções do hook useDashboard
   const itensMenu = [
     { id: "dashboard", nome: "Dashboard", icone: "📊" },
     { id: "metricas", nome: "Métricas", icone: "📈" },
     { id: "usuarios", nome: "Usuários", icone: "👥" },
     { id: "config", nome: "Configurações", icone: "⚙️" },
   ];
+  // ================================================================================
 
   // declara a Importação dos componentes de autenticação de TelaLogin e TelaRegistro
   if (!auth.autenticado) {
@@ -140,14 +112,17 @@ function App() {
                 <h3 className="text-lg font-semibold mb-4">
                   Criar Nova Métrica
                 </h3>
-                <form onSubmit={calcularMetricas} className="flex gap-4">
+                <form
+                  onSubmit={dashboard.calcularMetricas}
+                  className="flex gap-4"
+                >
                   <input
                     type="text"
                     placeholder="Nome da métrica"
-                    value={novaMetrica.nome}
+                    value={dashboard.novaMetrica.nome}
                     onChange={(e) =>
-                      setNovaMetrica({
-                        ...novaMetrica,
+                      dashboard.setNovaMetrica({
+                        ...dashboard.novaMetrica,
                         nome: e.target.value,
                       })
                     }
@@ -158,10 +133,10 @@ function App() {
                     type="number"
                     step="0.01"
                     placeholder="Benchmark"
-                    value={novaMetrica.benchmark}
+                    value={dashboard.novaMetrica.benchmark}
                     onChange={(e) =>
-                      setNovaMetrica({
-                        ...novaMetrica,
+                      dashboard.setNovaMetrica({
+                        ...dashboard.novaMetrica,
                         benchmark: e.target.value,
                       })
                     }
@@ -184,7 +159,7 @@ function App() {
                     Lista de Métricas (do Backend)
                   </h3>
                 </div>
-                {loading ? (
+                {dashboard.loading ? (
                   <div className="p-6 text-center text-gray-500">
                     Carregando...
                   </div>
@@ -198,7 +173,7 @@ function App() {
                       </tr>
                     </thead>
                     <tbody>
-                      {metricas.map((metrica) => (
+                      {dashboard.metricas.map((metrica) => (
                         <tr
                           key={metrica.id}
                           className="border-t hover:bg-gray-50"
