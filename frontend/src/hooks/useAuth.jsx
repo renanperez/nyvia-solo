@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createContext, useContext } from "react"; //  Importa createContext e useContext do React para criar e usar o contexto de autenticação
 
 const AuthContext = createContext(); // Cria o contexto de autenticação
@@ -8,7 +8,8 @@ const AuthContext = createContext(); // Cria o contexto de autenticação
 // ================================================================================
 
 // AuthProvider (em useAuth.jsx) - componente que envolve a aplicação e fornece o contexto de autenticação
-export function AuthProvider({ children }) {  // Recebe os componentes filhos que serão envoltos pelo provedor
+export function AuthProvider({ children }) {
+  // Recebe os componentes filhos que serão envoltos pelo provedor
   const [autenticado, setAutenticado] = useState(false); // Estado para rastrear se o usuário está autenticado
   const [mostraRegistro, setMostraRegistro] = useState(false); // Estado para alternar entre tela de login e registro
   const [erro, setErro] = useState(""); // Estado para armazenar mensagens de erro
@@ -58,6 +59,17 @@ export function AuthProvider({ children }) {  // Recebe os componentes filhos qu
       setErro("Erro ao conectar com servidor");
     }
   };
+
+  // Reage a mudança de autenticação
+  useEffect(() => {
+    if (autenticado) {
+      localStorage.setItem("usuario", JSON.stringify(usuario)); // Salva quando loga
+      localStorage.setItem("autenticado", "true");
+    } else {
+      localStorage.removeItem("usuario"); // Remove quando deslogar
+      localStorage.removeItem("autenticado");
+    }
+  }, [autenticado, usuario]);
 
   return (
     <AuthContext.Provider
