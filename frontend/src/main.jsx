@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
+import App from "./App.1.jsx";
 import { AuthProvider } from "./hooks/useAuth.jsx";
 import "./index.css";
 // Render the main App component into the root div in index.html

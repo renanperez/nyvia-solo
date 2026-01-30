@@ -1,25 +1,22 @@
-//hooks do React
-import { useState, useEffect } from "react";
-import { useAuth } from "./hooks/useAuth";
+import React, { useState, useEffect } from "react";
 import { TelaLogin } from "./components/auth/TelaLogin";
 import { TelaRegistro } from "./components/auth/TelaRegistro";
+import { useAuth } from "./hooks/useAuth";
 import { useDashboard } from "./hooks/useDashboard";
 
-// ================================================================================
-// Componente principal da aplicação
-// ================================================================================
 function App() {
-  const auth = useAuth(); // Hook para autenticação usando o contexto de AuthProvider (em useAuth.jsx)
-  const dashboard = useDashboard(); // Hook para gerenciar o dashboard e métricas do backend (em useDashboard.jsx)
+  // Hook para autenticação usando o contexto de AuthProvider (em useAuth.jsx)
+  const auth = useAuth();
 
-  // ================================================================================
+  // Hook para gerenciar o dashboard e métricas do backend
+  const dashboard = useDashboard();
+
   // Estados (useState) para gerenciar o menu lateral e a página atual ( dashboard, métricas, usuários, configurações)
-  // ================================================================================
-
   const [menuAberto, setMenuAberto] = useState(true); // Estado para controlar se o menu lateral está aberto ou fechado
   const [paginaAtual, setPaginaAtual] = useState("dashboard"); // Estado para controlar a página atual exibida no conteúdo principal
+
+  // Hook para gerenciar o dashboard e métricas do backend (ex: buscar métricas, criar nova métrica)
   useEffect(() => {
-    // Hook para gerenciar o dashboard e métricas do backend (ex: buscar métricas, criar nova métrica)
     if (paginaAtual === "metricas") {
       dashboard.buscarMetricas(); // Buscar métricas do backend ao acessar a página de métricas
     }
@@ -27,34 +24,24 @@ function App() {
 
   // ================================================================================
   // Desestruturação dos estados e funções do hook useDashboard
-  // ================================================================================
-
   const itensMenu = [
     { id: "dashboard", nome: "Dashboard", icone: "📊" },
     { id: "metricas", nome: "Métricas", icone: "📈" },
     { id: "usuarios", nome: "Usuários", icone: "👥" },
     { id: "config", nome: "Configurações", icone: "⚙️" },
   ];
-
   // ================================================================================
-  // Renderização condicional com base no estado de autenticação
-  // ================================================================================
-
+  // declara a Importação dos componentes de autenticação de TelaLogin e TelaRegistro
   if (!auth.autenticado) {
-    // declara a Importação dos componentes de autenticação de TelaLogin e TelaRegistro
     return auth.mostraRegistro ? <TelaRegistro /> : <TelaLogin />; // Mostra tela de login ou registro
   }
 
-  // ================================================================================
   // Dashboard Principal
-  // ================================================================================
   return (
     <div className="flex h-screen">
       {/* Menu Lateral */}
       <div
-        className={`${
-          menuAberto ? "w-64" : "w-20"
-        } bg-gray-900 text-white transition-all duration-300`}
+        className={`${menuAberto ? "w-64" : "w-20"} bg-gray-900 text-white transition-all duration-300`}
       >
         <div className="p-4 flex items-center justify-between border-b border-gray-700">
           <h1 className={`font-bold text-xl ${!menuAberto && "hidden"}`}>
@@ -219,4 +206,4 @@ function App() {
     </div>
   );
 }
-export default App; // Exporta o componente App como padrão do módulo para uso em outros arquivos
+export default App;

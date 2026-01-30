@@ -1,6 +1,10 @@
 import { useState } from "react";
 
-// Hook personalizado para gerenciar o dashboard e métricas
+// ================================================================================
+// Custom hook para gerenciar o dashboard e métricas
+// ================================================================================
+
+//  Hook (useDashboard) personalizado para gerenciar o dashboard e métricas
 export function useDashboard() {
   const [metricas, setMetricas] = useState([]); // Estado para armazenar as métricas
   const [loading, setLoading] = useState(false); // Estado para indicar carregamento
