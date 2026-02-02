@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-// ================================================================================
-// Custom hook para gerenciar o dashboard e métricas
-// ================================================================================
+// ===========================================================================================================================
+// Custom hook para gerenciar o dashboard e métricas da aplicação (por ex: buscar métricas, criar nova métrica) na plataforma
+// ===========================================================================================================================
 
-//  Hook (useDashboard) personalizado para gerenciar o dashboard e métricas
 export function useDashboard() {
+  const [paginaAtual, setPaginaAtual] = useState("dashboard"); // Estado para controlar a página atual exibida no conteúdo principal( dashboard, métricas, usuários, configurações)
   const [metricas, setMetricas] = useState([]); // Estado para armazenar as métricas
   const [loading, setLoading] = useState(false); // Estado para indicar carregamento
   const [novaMetrica, setNovaMetrica] = useState({
@@ -13,6 +13,7 @@ export function useDashboard() {
     nome: "",
     benchmark: "",
   });
+
   // Função para buscar dados das métricas do backend
   const buscarMetricas = async () => {
     setLoading(true);
@@ -26,6 +27,7 @@ export function useDashboard() {
     }
     setLoading(false);
   };
+
   // Função para calcular dados das métricas no backend
   const calcularMetricas = async (e) => {
     e.preventDefault();
@@ -44,8 +46,16 @@ export function useDashboard() {
       console.error("Erro ao calcular métricas:", error);
     }
   };
+  useEffect(() => {
+    // useEffect para buscar métricas ao acessar a página de métricas na plataforma atualizando página atual
+    if (paginaAtual === "metricas") {
+      buscarMetricas(); // Buscar métricas ao carregar o hook
+    }
+  }, [paginaAtual]);
 
   return {
+    paginaAtual,
+    setPaginaAtual,
     metricas,
     setMetricas,
     loading,

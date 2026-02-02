@@ -1,29 +1,17 @@
 //hooks do React
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "./hooks/useAuth";
 import { TelaLogin } from "./components/auth/TelaLogin";
 import { TelaRegistro } from "./components/auth/TelaRegistro";
 import { useDashboard } from "./hooks/useDashboard";
 
 // ================================================================================
-// Componente principal da aplicação
+// Componente principal da aplicação React e da estrutura do dashboard
 // ================================================================================
 function App() {
   const auth = useAuth(); // Hook para autenticação usando o contexto de AuthProvider (em useAuth.jsx)
   const dashboard = useDashboard(); // Hook para gerenciar o dashboard e métricas do backend (em useDashboard.jsx)
-
-  // ================================================================================
-  // Estados (useState) para gerenciar o menu lateral e a página atual ( dashboard, métricas, usuários, configurações)
-  // ================================================================================
-
   const [menuAberto, setMenuAberto] = useState(true); // Estado para controlar se o menu lateral está aberto ou fechado
-  const [paginaAtual, setPaginaAtual] = useState("dashboard"); // Estado para controlar a página atual exibida no conteúdo principal
-  useEffect(() => {
-    // Hook para gerenciar o dashboard e métricas do backend (ex: buscar métricas, criar nova métrica)
-    if (paginaAtual === "metricas") {
-      dashboard.buscarMetricas(); // Buscar métricas do backend ao acessar a página de métricas
-    }
-  }, [paginaAtual]);
 
   // ================================================================================
   // Desestruturação dos estados e funções do hook useDashboard
@@ -37,11 +25,11 @@ function App() {
   ];
 
   // ================================================================================
-  // Renderização condicional com base no estado de autenticação
+  // Renderização condicional dos componentes de autenticação (Tela Login/Registro)
+  // feita antes de mostrar o dashboard principal com base no estado de autenticação
   // ================================================================================
 
   if (!auth.autenticado) {
-    // declara a Importação dos componentes de autenticação de TelaLogin e TelaRegistro
     return auth.mostraRegistro ? <TelaRegistro /> : <TelaLogin />; // Mostra tela de login ou registro
   }
 
@@ -72,9 +60,9 @@ function App() {
           {itensMenu.map((item) => (
             <button
               key={item.id}
-              onClick={() => setPaginaAtual(item.id)}
+              onClick={() => dashboard.setPaginaAtual(item.id)}
               className={`w-full p-4 flex items-center gap-3 hover:bg-gray-800 transition ${
-                paginaAtual === item.id
+                dashboard.paginaAtual === item.id
                   ? "bg-gray-800 border-l-4 border-blue-500"
                   : ""
               }`}
@@ -90,12 +78,12 @@ function App() {
       <div className="flex-1 overflow-auto">
         <header className="bg-white shadow p-6">
           <h2 className="text-2xl font-bold text-gray-800">
-            {itensMenu.find((i) => i.id === paginaAtual)?.nome}
+            {itensMenu.find((i) => i.id === dashboard.paginaAtual)?.nome}
           </h2>
         </header>
 
         <main className="p-6">
-          {paginaAtual === "dashboard" && (
+          {dashboard.paginaAtual === "dashboard" && (
             <div className="grid grid-cols-3 gap-6">
               <div className="bg-white p-6 rounded-lg shadow">
                 <div className="text-sm text-gray-500">Total Vendas</div>
@@ -114,7 +102,7 @@ function App() {
             </div>
           )}
 
-          {paginaAtual === "metricas" && (
+          {dashboard.paginaAtual === "metricas" && (
             <div className="space-y-6">
               {/* Formulário para criar métrica */}
               <div className="bg-white p-6 rounded-lg shadow">
@@ -201,7 +189,7 @@ function App() {
             </div>
           )}
 
-          {paginaAtual === "usuarios" && (
+          {dashboard.paginaAtual === "usuarios" && (
             <div className="bg-white p-6 rounded-lg shadow">
               <p className="text-gray-600">
                 Página de usuários em construção...
@@ -209,7 +197,7 @@ function App() {
             </div>
           )}
 
-          {paginaAtual === "config" && (
+          {dashboard.paginaAtual === "config" && (
             <div className="bg-white p-6 rounded-lg shadow">
               <p className="text-gray-600">Configurações do sistema...</p>
             </div>

@@ -59,9 +59,8 @@ export function AuthProvider({ children }) {
       setErro("Erro ao conectar com servidor");
     }
   };
-
-  // Reage a mudança de autenticação
   useEffect(() => {
+    // useEffect para persistir o estado de autenticação no localStorage  ao mudar autenticado ou usuario
     if (autenticado) {
       localStorage.setItem("usuario", JSON.stringify(usuario)); // Salva quando loga
       localStorage.setItem("autenticado", "true");
