@@ -1,20 +1,22 @@
-//hooks do React
+//hooks do React e componentes de autenticação e dashboard (custom hooks)
 import { useState } from "react";
 import { useAuth } from "./hooks/useAuth";
 import { TelaLogin } from "./components/auth/TelaLogin";
 import { TelaRegistro } from "./components/auth/TelaRegistro";
 import { useDashboard } from "./hooks/useDashboard";
 
-// ================================================================================
+// =======================================================================================
 // Componente principal da aplicação React e da estrutura do dashboard
-// ================================================================================
+// *faz uso dos hooks de autenticação e dashboard para gerenciar estados e funcionalidades
+// =======================================================================================
 function App() {
   const auth = useAuth(); // Hook para autenticação usando o contexto de AuthProvider (em useAuth.jsx)
-  const dashboard = useDashboard(); // Hook para gerenciar o dashboard e métricas do backend (em useDashboard.jsx)
-  const [menuAberto, setMenuAberto] = useState(true); // Estado para controlar se o menu lateral está aberto ou fechado
+  const dashboard = useDashboard(); // Custom Hook para gerenciar o dashboard e métricas do backend (em useDashboard.jsx)
+  const [menuAberto, setMenuAberto] = useState(true); // Custom Hook que indica o Estado do menu lateral, aberto ou fechado (em App.jsx)
 
   // ================================================================================
   // Desestruturação dos estados e funções do hook useDashboard
+  // *assim como definição dos itens do menu lateral
   // ================================================================================
 
   const itensMenu = [
@@ -26,7 +28,7 @@ function App() {
 
   // ================================================================================
   // Renderização condicional dos componentes de autenticação (Tela Login/Registro)
-  // feita antes de mostrar o dashboard principal com base no estado de autenticação
+  // *feita antes de mostrar o dashboard principal com base no estado de autenticação
   // ================================================================================
 
   if (!auth.autenticado) {
@@ -34,7 +36,8 @@ function App() {
   }
 
   // ================================================================================
-  // Dashboard Principal
+  // Dashboard Principal da aplicação após autenticação bem-sucedida
+  // gerencia o menu lateral e o conteúdo principal com base na página atual
   // ================================================================================
   return (
     <div className="flex h-screen">

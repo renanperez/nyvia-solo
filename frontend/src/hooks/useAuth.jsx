@@ -3,9 +3,9 @@ import { createContext, useContext } from "react"; //  Importa createContext e u
 
 const AuthContext = createContext(); // Cria o contexto de autenticação
 
-// ================================================================================
-// Custom hooks e Provider para autenticação
-// ================================================================================
+// =====================================================================================
+// Custom hooks  para gerenciar autenticação de usuários (login, registro) na aplicação
+// ====================================================================================
 
 // AuthProvider (em useAuth.jsx) - componente que envolve a aplicação e fornece o contexto de autenticação
 export function AuthProvider({ children }) {
@@ -59,8 +59,18 @@ export function AuthProvider({ children }) {
       setErro("Erro ao conectar com servidor");
     }
   };
+
+  // useEffect para verificar se o usuário já está autenticado ao carregar o componente
   useEffect(() => {
-    // useEffect para persistir o estado de autenticação no localStorage  ao mudar autenticado ou usuario
+    const usuarioSalvo = localStorage.getItem("usuario");
+    if (usuarioSalvo) {
+      setUsuario(JSON.parse(usuarioSalvo));
+      setAutenticado(true);
+    }
+  }, []);
+
+  // useEffect para persistir o estado de autenticação no localStorage ao mudar autenticado ou usuario
+  useEffect(() => {
     if (autenticado) {
       localStorage.setItem("usuario", JSON.stringify(usuario)); // Salva quando loga
       localStorage.setItem("autenticado", "true");

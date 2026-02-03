@@ -6,10 +6,10 @@ import { useState, useEffect } from "react";
 
 export function useDashboard() {
   const [paginaAtual, setPaginaAtual] = useState("dashboard"); // Estado para controlar a página atual exibida no conteúdo principal( dashboard, métricas, usuários, configurações)
-  const [metricas, setMetricas] = useState([]); // Estado para armazenar as métricas
-  const [loading, setLoading] = useState(false); // Estado para indicar carregamento
+  const [metricas, setMetricas] = useState([]); // estado que mostra e armazena as métricas buscadas do backend e exibidas na página de métricas
+  const [loading, setLoading] = useState(false); // estado para indicar se os dados estão sendo carregados
   const [novaMetrica, setNovaMetrica] = useState({
-    // Estado para nova métrica a ser criada
+    // Estado para criar uma nova métrica            
     nome: "",
     benchmark: "",
   });
