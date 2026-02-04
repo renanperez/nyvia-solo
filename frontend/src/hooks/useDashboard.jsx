@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react";
+import { createContext, useContext } from "react"; //  Importa createContext e useContext do React para criar e usar o contexto de autenticação
 
+const DashboardContext = createContext(); // Cria o contexto de dashboard
 // ===========================================================================================================================
 // Custom hook para gerenciar o dashboard e métricas da aplicação (por ex: buscar métricas, criar nova métrica) na plataforma
 // ===========================================================================================================================
 
-export function useDashboard() {
+export function DashboardProvider({ children }) {
+  // Recebe os componentes filhos que serão envoltos pelo provedor
   const [paginaAtual, setPaginaAtual] = useState("dashboard"); // Estado para controlar a página atual exibida no conteúdo principal( dashboard, métricas, usuários, configurações)
   const [metricas, setMetricas] = useState([]); // estado que mostra e armazena as métricas buscadas do backend e exibidas na página de métricas
   const [loading, setLoading] = useState(false); // estado para indicar se os dados estão sendo carregados
   const [novaMetrica, setNovaMetrica] = useState({
-    // Estado para criar uma nova métrica            
+    // Estado para criar uma nova métrica
     nome: "",
     benchmark: "",
   });
@@ -53,16 +56,26 @@ export function useDashboard() {
     }
   }, [paginaAtual]);
 
-  return {
-    paginaAtual,
-    setPaginaAtual,
-    metricas,
-    setMetricas,
-    loading,
-    setLoading,
-    novaMetrica,
-    setNovaMetrica,
-    buscarMetricas,
-    calcularMetricas,
-  };
+  return (
+    <DashboardContext.Provider
+      value={{
+        paginaAtual,
+        setPaginaAtual,
+        metricas,
+        setMetricas,
+        loading,
+        setLoading,
+        novaMetrica,
+        setNovaMetrica,
+        buscarMetricas,
+        calcularMetricas,
+      }}
+    >
+      {children}
+    </DashboardContext.Provider>
+  );
+}
+// Custom Hook que retorna o contexto (valores e funções) de dashboard para ser usado em outros componentes
+export function useDashboard() {
+  return useContext(DashboardContext);
 }

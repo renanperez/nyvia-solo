@@ -79,7 +79,7 @@ export function AuthProvider({ children }) {
       localStorage.removeItem("autenticado");
     }
   }, [autenticado, usuario]);
-
+// Retorna o provedor de contexto com os valores e funções de autenticação
   return (
     <AuthContext.Provider
       value={{
