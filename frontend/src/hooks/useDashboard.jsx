@@ -21,6 +21,7 @@ export function DashboardProvider({ children }) {
     </DashboardContext.Provider>
   );
 }
+// Fim do componente DashboardProvider (provedor do contexto do dashboard)
 export function useDashboard() {
-  return useContext(DashboardContext);
+  return useContext(DashboardContext); // Hook personalizado para acessar o DashboardContext (contexto do dashboard) em outros componentes
 }

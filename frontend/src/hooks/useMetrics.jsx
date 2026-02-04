@@ -44,7 +44,7 @@ export function MetricsProvider({ children }) {
     }
   };
   useEffect(() => {
-    // useEffect para buscar métricas ao acessar a página de métricas na plataforma atualizando página atual
+    // useEffect para buscar as métricas ao carregar o hook MetricsProvider, a página de métricas chama esse hook
     buscarMetricas(); // Buscar métricas ao carregar o hook
   }, []);
 
@@ -67,5 +67,5 @@ export function MetricsProvider({ children }) {
 }
 // Fim do componente MetricsProvider
 export function useMetrics() {
-  return useContext(MetricsContext);
+  return useContext(MetricsContext); // Hook personalizado para acessar o MetricsContext (contexto de métricas) em outros componentes
 }

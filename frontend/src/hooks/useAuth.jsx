@@ -79,7 +79,7 @@ export function AuthProvider({ children }) {
       localStorage.removeItem("autenticado");
     }
   }, [autenticado, usuario]);
-// Retorna o provedor de contexto com os valores e funções de autenticação
+  // Retorna o provedor de contexto com os valores e funções de autenticação
   return (
     <AuthContext.Provider
       value={{
@@ -101,5 +101,5 @@ export function AuthProvider({ children }) {
 }
 // useAuth Hook (em useAuth.jsx) - hook personalizado para acessar o contexto de autenticação
 export function useAuth() {
-  return useContext(AuthContext); // Retorna o valor do contexto de autenticação para uso em outros componentes
+  return useContext(AuthContext); // Retorna o valor de AuthContext para uso em outros componentes
 }
