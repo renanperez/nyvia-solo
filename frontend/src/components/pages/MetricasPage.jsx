@@ -1,21 +1,21 @@
-import { useDashboard } from "../../hooks/useDashboard";
+import { useMetrics } from "../../hooks/useMetrics";
 
 export function MetricasPage() {
-  const dashboard = useDashboard();
+  const metrics = useMetrics();
 
   return (
     <div className="space-y-6">
       {/* Formulário para criar métrica */}
       <div className="bg-white p-6 rounded-lg shadow">
         <h3 className="text-lg font-semibold mb-4">Criar Nova Métrica</h3>
-        <form onSubmit={dashboard.calcularMetricas} className="flex gap-4">
+        <form onSubmit={metrics.calcularMetricas} className="flex gap-4">
           <input
             type="text"
             placeholder="Nome da métrica"
-            value={dashboard.novaMetrica.nome}
+            value={metrics.novaMetrica.nome}
             onChange={(e) =>
-              dashboard.setNovaMetrica({
-                ...dashboard.novaMetrica,
+              metrics.setNovaMetrica({
+                ...metrics.novaMetrica,
                 nome: e.target.value,
               })
             }
@@ -26,10 +26,10 @@ export function MetricasPage() {
             type="number"
             step="0.01"
             placeholder="Benchmark"
-            value={dashboard.novaMetrica.benchmark}
+            value={metrics.novaMetrica.benchmark}
             onChange={(e) =>
-              dashboard.setNovaMetrica({
-                ...dashboard.novaMetrica,
+              metrics.setNovaMetrica({
+                ...metrics.novaMetrica,
                 benchmark: e.target.value,
               })
             }
@@ -52,7 +52,7 @@ export function MetricasPage() {
             Lista de Métricas (do Backend)
           </h3>
         </div>
-        {dashboard.loading ? (
+        {metrics.loading ? (
           <div className="p-6 text-center text-gray-500">Carregando...</div>
         ) : (
           <table className="w-full">
@@ -64,7 +64,7 @@ export function MetricasPage() {
               </tr>
             </thead>
             <tbody>
-              {dashboard.metricas.map((metrica) => (
+              {metrics.metricas.map((metrica) => (
                 <tr key={metrica.id} className="border-t hover:bg-gray-50">
                   <td className="px-6 py-4">{metrica.id}</td>
                   <td className="px-6 py-4">{metrica.nome}</td>
