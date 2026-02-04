@@ -8,7 +8,7 @@ export function Sidebar({ menuAberto, setMenuAberto, itensMenu }) {
 
   return (
     <div className="flex h-screen">
-      {/* Menu Lateral */}
+      {/* Sidebar - Menu Lateral */}
       <div
         className={`${
           menuAberto ? "w-64" : "w-20"
