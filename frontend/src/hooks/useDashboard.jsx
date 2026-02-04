@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { createContext, useContext } from "react"; //  Importa createContext e useContext do React para criar e usar o contexto de autenticação
 
 const DashboardContext = createContext(); // Cria o contexto de dashboard
