@@ -1,3 +1,7 @@
+//==============================================================
+// Página de Dashboard: Exibe as principais métricas do sistema
+//==============================================================
+
 export function DashboardPage() {
   return (
     // Renderiza as métricas do dashboard quando a página atual é "dashboard"

@@ -54,6 +54,21 @@ app.post("/api/metricas", (req, res) => {
   });
 });
 
+
+// ========================================================
+//  Rota POST - validar inputs (usada para validação e guardrails)
+// ========================================================
+const validateInputs = require('./validators/validateInputs');
+
+app.post("/api/validar", (req, res) => {
+  const resultado = validateInputs(req.body);
+  res.json(resultado);
+});
+
+// =========================================================
+// Inicia o servidor na porta 3001  
+// =========================================================
+
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`🚀 Backend rodando em http://localhost:${PORT}`);
