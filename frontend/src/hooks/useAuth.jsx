@@ -79,6 +79,13 @@ export function AuthProvider({ children }) {
       localStorage.removeItem("autenticado");
     }
   }, [autenticado, usuario]);
+
+  // Função de logout
+  const fazerLogout = () => {
+    setAutenticado(false); // dispara o useEffect que limpa o localStorage
+    setUsuario(null); // limpa os dados do usuário na memória
+  };
+
   // Retorna o provedor de contexto com os valores e funções de autenticação
   return (
     <AuthContext.Provider
@@ -93,6 +100,7 @@ export function AuthProvider({ children }) {
         setUsuario,
         fazerRegistro,
         fazerLogin,
+        fazerLogout,
       }}
     >
       {children}

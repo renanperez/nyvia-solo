@@ -26,7 +26,7 @@ db.run(
     } else {
       console.log("✅ Tabela workspaces pronta");
     }
-  }
+  },
 );
 
 //  CRIAR tabela usuarios
@@ -46,6 +46,6 @@ db.run(
     } else {
       console.log("✅ Tabela usuarios pronta");
     }
-  }
+  },
 );
 module.exports = db;

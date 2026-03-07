@@ -63,7 +63,7 @@ function autenticar(dados, callback) {
           });
         }
       });
-    }
+    },
   );
 }
 
