@@ -124,7 +124,6 @@ export function MetricsProvider({ children }) {
         cpc_search: undefined,
         taxa_conversao: undefined,
       });
-      setMetricas([]);
     }
   }, [autenticado]);
 
