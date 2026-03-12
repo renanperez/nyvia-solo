@@ -121,18 +121,18 @@ function validateInputs(inputs) {
 
   // Crescimento mensal
   if (
-    inputs.crescimento_mensal === undefined ||
-    inputs.crescimento_mensal < 0 ||
-    inputs.crescimento_mensal > 0.2
+    inputs.incremento_orcamental === undefined ||
+    inputs.incremento_orcamental < 0 ||
+    inputs.incremento_orcamental > 0.2
   ) {
     errors.push({
-      field: "crescimento_mensal",
+      field: "incremento_orcamental",
       message: "Crescimento mensal deve estar entre 0% e 20%",
     });
   }
-  if (inputs.crescimento_mensal > 0.1) {
+  if (inputs.incremento_orcamental > 0.1) {
     warnings.push({
-      field: "crescimento_mensal",
+      field: "incremento_orcamental",
       message:
         "Crescimento acima de 10%/mês pode exigir múltiplos ajustes para não disparar learning phase",
     });
@@ -143,20 +143,19 @@ function validateInputs(inputs) {
   // ========================================
 
   // Ticket médio
-  if (!inputs.ticket_medio || inputs.ticket_medio <= 0) {
+  if (!inputs.aov || inputs.aov <= 0) {
     errors.push({
-      field: "ticket_medio",
+      field: "aov",
       message: "Ticket médio deve ser maior que zero",
     });
   } else if (inputs.mercado) {
     const range = ranges.find((r) => r.mercado === inputs.mercado);
     if (
       range &&
-      (inputs.ticket_medio < range.ticket_min ||
-        inputs.ticket_medio > range.ticket_max)
+      (inputs.aov < range.ticket_min || inputs.aov > range.ticket_max)
     ) {
       warnings.push({
-        field: "ticket_medio",
+        field: "aov",
         message: `Ticket fora da faixa típica (R$${range.ticket_min} - R$${range.ticket_max}) para ${inputs.mercado}`,
       });
     }

@@ -9,10 +9,10 @@ const MetricsContext = createContext();
 // =================================================================================
 
 export function MetricsProvider({ children }) {
-  const [metricas, setMetricas] = useState([]); // estado que mostra e armazena as métricas buscadas do backend e exibidas na página de métricas
   const [loading, setLoading] = useState(false); // estado para indicar se os dados estão sendo carregados
   const [ranges, setRanges] = useState(null); // Armazena ranges do mercado selecionado
   const [validacao, setValidacao] = useState(null); // Armazena resultado do backend para validação de inputs
+  const [projecao, setProjecao] = useState(null); // Armazena resultado do backend para projeção de métricas mês a mês
   const [benchmarks, setBenchmarks] = useState(null); // Armazena benchmarks do mercado selecionado
   const { autenticado } = useAuth(); // ← pega estado de autenticação do hook de autenticação para usar como dependência e evitar buscar métricas se não estiver autenticado
   const [novaMetrica, setNovaMetrica] = useState({
@@ -24,8 +24,8 @@ export function MetricsProvider({ children }) {
     split_display: 0.3,
     split_search: 0.7,
     apf: 12,
-    crescimento_mensal: 0.05,
-    ticket_medio: 100,
+    incremento_orcamental: 0.05,
+    aov: 100,
     customer_lifespan_anos: 1,
     cogs: undefined,
     // Métricas de Mídia (opcionais - usa benchmark se undefined)
@@ -36,43 +36,29 @@ export function MetricsProvider({ children }) {
     taxa_conversao: undefined,
   }); // estado para armazenar os dados da nova métrica a ser calculada, com valores iniciais para facilitar o teste e a validação do formulário
 
-  // Função para buscar dados das métricas do backend
-  const buscarMetricas = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch("http://localhost:3001/api/metricas");
-      const data = await response.json();
-      setMetricas(data.metricas);
-    } catch (error) {
-      console.error("Erro ao buscar métricas:", error);
-      alert("Erro: Certifique-se de que o backend está rodando na porta 3001");
-    }
-    setLoading(false);
-  };
   // Função para calcular dados das métricas no backend
   const calcularMetricas = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3001/api/metricas", {
+      const response = await fetch("http://localhost:3001/api/calcular", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(novaMetrica),
       });
       const data = await response.json();
-      alert(data.mensagem);
-      console.log("Resultados:", data.resultados);
-      setNovaMetrica({ nome: "", benchmark: "" });
-      buscarMetricas();
+
+      if (data.sucesso) {
+        setProjecao(data.resultados);
+        setValidacao({ valid: true, errors: [], warnings: data.avisos ?? [] });
+        console.log("Projeção calculada:", data.resultados);
+      } else {
+        setValidacao({ valid: false, errors: data.erros, warnings: [] });
+        console.error("Erros de validação:", data.erros);
+      }
     } catch (error) {
-      console.error("Erro ao calcular métricas:", error);
+      console.error("Erro ao calcular:", error);
     }
   };
-
-  useEffect(() => {
-    if (autenticado) {
-      buscarMetricas(); // Buscar métricas ao carregar o hook se o usuário estiver autenticado
-    }
-  }, [autenticado]); // Dependência de autenticado para evitar buscar métricas se não estiver logado
 
   // useEffect para buscar ranges quando mercado muda
   useEffect(() => {
@@ -128,8 +114,8 @@ export function MetricsProvider({ children }) {
         split_display: 0.3,
         split_search: 0.7,
         apf: 12,
-        crescimento_mensal: 0.05,
-        ticket_medio: 100,
+        incremento_orcamental: 0.05,
+        aov: 100,
         customer_lifespan_anos: 1,
         cogs: undefined,
         ctr_display: undefined,
@@ -169,15 +155,14 @@ export function MetricsProvider({ children }) {
   return (
     <MetricsContext.Provider
       value={{
-        metricas,
-        setMetricas,
         loading,
         setLoading,
         validacao,
         setValidacao,
+        projecao,
+        setProjecao,
         novaMetrica,
         setNovaMetrica,
-        buscarMetricas,
         calcularMetricas,
         ranges,
         benchmarks,

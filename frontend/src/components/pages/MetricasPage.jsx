@@ -17,18 +17,7 @@ export function MetricasPage() {
 
         <form
           noValidate
-          onSubmit={(e) => {
-            e.preventDefault();
-            fetch("http://localhost:3001/api/validar", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(metrics.novaMetrica),
-            })
-              .then((res) => res.json())
-              .then((data) => {
-                metrics.setValidacao(data); // Armazena resultadodo backend de validação no estado 'validacao'
-              });
-          }}
+          onSubmit={metrics.calcularMetricas}
           className="flex flex-col gap-4"
         >
           {/* ========== SEÇÃO: CONFIGURAÇÃO DA CAMPANHA ========== */}
@@ -277,23 +266,23 @@ export function MetricasPage() {
           {/* Campo Crescimento Mensal */}
           <div>
             <label className="block text-sm font-medium mb-1">
-              Crescimento mensal (%)
+              Incremento orçamental (%)
             </label>
             <input
               type="number"
-              value={metrics.novaMetrica.crescimento_mensal ?? ""}
+              value={metrics.novaMetrica.incremento_orcamental ?? ""}
               onChange={(e) =>
                 metrics.setNovaMetrica({
                   ...metrics.novaMetrica,
-                  crescimento_mensal: Number(e.target.value),
+                  incremento_orcamental: Number(e.target.value),
                 })
               }
               className="w-full border border-gray-300 rounded px-4 py-2"
               placeholder="Ex: 0.05 para 5% de crescimento ao mês"
             />
             <span className="text-xs text-gray-500">
-              % de crescimento mensal entre 0% e 20% (ex: 0.05 = cresce 5% ao
-              mês)
+              % de aumento do orçamento/mês entre 0% e 20% (ex: 0.05 = cresce 5%
+              ao mês)
             </span>
           </div>
 
@@ -316,26 +305,24 @@ export function MetricasPage() {
             <input
               type="number"
               value={
-                metrics.novaMetrica.ticket_medio === undefined
+                metrics.novaMetrica.aov === undefined
                   ? ""
-                  : metrics.novaMetrica.ticket_medio
+                  : metrics.novaMetrica.aov
               }
               onChange={(e) => {
                 const valor = e.target.value;
                 metrics.setNovaMetrica({
                   ...metrics.novaMetrica,
-                  ticket_medio: valor === "" ? undefined : Number(valor),
+                  aov: valor === "" ? undefined : Number(valor),
                 });
               }}
               className={`
                 w-full px-4 py-2 border-2 rounded
                 ${
                   metrics.ranges &&
-                  metrics.novaMetrica.ticket_medio !== undefined &&
-                  (metrics.novaMetrica.ticket_medio <
-                    metrics.ranges.ticket_min ||
-                    metrics.novaMetrica.ticket_medio >
-                      metrics.ranges.ticket_max)
+                  metrics.novaMetrica.aov !== undefined &&
+                  (metrics.novaMetrica.aov < metrics.ranges.ticket_min ||
+                    metrics.novaMetrica.aov > metrics.ranges.ticket_max)
                     ? "border-purple-300 bg-purple-50"
                     : "border-gray-300"
                 }
@@ -423,13 +410,11 @@ export function MetricasPage() {
                 ${
                   metrics.ranges &&
                   metrics.novaMetrica.cogs !== undefined &&
-                  metrics.novaMetrica.ticket_medio &&
+                  metrics.novaMetrica.aov &&
                   (metrics.novaMetrica.cogs <
-                    metrics.novaMetrica.ticket_medio *
-                      metrics.ranges.cogs_min ||
+                    metrics.novaMetrica.aov * metrics.ranges.cogs_min ||
                     metrics.novaMetrica.cogs >
-                      metrics.novaMetrica.ticket_medio *
-                        metrics.ranges.cogs_max)
+                      metrics.novaMetrica.aov * metrics.ranges.cogs_max)
                     ? "border-purple-300 bg-purple-50"
                     : "border-gray-300"
                 }
@@ -437,16 +422,16 @@ export function MetricasPage() {
             />
 
             {/* Texto explicativo + sugestão */}
-            {metrics.ranges && metrics.novaMetrica.ticket_medio && (
+            {metrics.ranges && metrics.novaMetrica.aov && (
               <p className="text-xs text-gray-500 mt-1">
                 Custo direto de entrega (produto/serviço): R$
-                {(
-                  metrics.novaMetrica.ticket_medio * metrics.ranges.cogs_min
-                ).toFixed(2)}{" "}
+                {(metrics.novaMetrica.aov * metrics.ranges.cogs_min).toFixed(
+                  2,
+                )}{" "}
                 - R$
-                {(
-                  metrics.novaMetrica.ticket_medio * metrics.ranges.cogs_max
-                ).toFixed(2)}{" "}
+                {(metrics.novaMetrica.aov * metrics.ranges.cogs_max).toFixed(
+                  2,
+                )}{" "}
                 ({metrics.novaMetrica.mercado})
               </p>
             )}

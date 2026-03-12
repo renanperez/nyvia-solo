@@ -11,9 +11,9 @@ const ranges = require("./data/ranges"); // Importa os ranges de referência par
 app.use(cors());
 app.use(express.json());
 
-//=================================================================
+//===================================================================
 // Rotas do backend para autenticação, registro, métricas e validação
-//=================================================================
+//===================================================================
 
 // Rota POST - registrar usuário
 app.post("/api/registrar", (req, res) => {
@@ -30,44 +30,41 @@ app.post("/api/login", (req, res) => {
   });
 });
 
-// Rota GET - buscar métricas *Manter Rotas provisoriamente -futuramente substituída por API*
-app.get("/api/metricas", (req, res) => {
-  res.json({
-    sucesso: true,
-    metricas: [
-      { id: 1, nome: "CPM", benchmark: 15.5 },
-      { id: 2, nome: "CPC", benchmark: 2.3 },
-      { id: 3, nome: "CTR", benchmark: 3.5 },
-    ],
-  });
-});
-
-// Rota POST - calcular métricas *Manter Rotas provisoriamente -futuramente substituída por API*
-app.post("/api/metricas", (req, res) => {
-  const dados = req.body;
-
-  // Cálculos simples de exemplo
-  const resultado1 = dados.valor_a * dados.valor_b;
-  const resultado2 = resultado1 + dados.valor_c;
-  const resultado3 = resultado2 / dados.valor_a;
-
-  res.json({
-    sucesso: true,
-    mensagem: "Métricas calculadas com sucesso",
-    resultados: {
-      metrica1: resultado1,
-      metrica2: resultado2,
-      metrica3: resultado3,
-    },
-  });
-});
-
 // ========================================================
 //  Rota POST - Endpoint usada para validar inputs e guardrails
 // ========================================================
 app.post("/api/validar", (req, res) => {
   const resultado = validateInputs(req.body);
   res.json(resultado);
+});
+
+// =========================================================
+// Rota POST - Calcular métricas (algoritmo principal)
+// =========================================================
+const calculateMetrics = require("./services/calculateMetrics");
+
+app.post("/api/calcular", (req, res) => {
+  const inputs = req.body;
+
+  // 1. Validar inputs antes de calcular
+  const validacao = validateInputs(inputs);
+  if (!validacao.valid) {
+    return res.json({
+      sucesso: false,
+      erros: validacao.errors,
+      avisos: validacao.warnings,
+    });
+  }
+
+  // 2. Calcular métricas
+  const resultados = calculateMetrics(inputs);
+
+  // 3. Retornar resultados
+  res.json({
+    sucesso: true,
+    avisos: validacao.warnings,
+    resultados,
+  });
 });
 
 //===========================================================
